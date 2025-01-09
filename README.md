@@ -2,6 +2,9 @@
 
 A web-based calculator tool for generating and managing quotes, optimized for Cloudflare Pages deployment.
 
+## Live Demo
+Visit the live application: [Quoting Calculator](https://quoting-calculator.pages.dev/)
+
 ## Features
 - Quote calculation
 - Interactive web interface
