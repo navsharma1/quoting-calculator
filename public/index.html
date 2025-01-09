@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quoting Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Quoting Calculator</h1>
+        
+        <div class="card shadow">
+            <div class="card-body">
+                <form id="quoteForm">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" min="1" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="unitPrice" class="form-label">Unit Price ($)</label>
+                        <input type="number" class="form-control" id="unitPrice" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="discount" class="form-label">Discount (%)</label>
+                        <input type="number" class="form-control" id="discount" min="0" max="100" value="0">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Calculate Quote</button>
+                </form>
+                
+                <div id="quoteResult" class="mt-4 d-none">
+                    <h3>Quote Summary</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td id="subtotal"></td>
+                            </tr>
+                            <tr>
+                                <td>Discount:</td>
+                                <td id="discountAmount"></td>
+                            </tr>
+                            <tr class="table-primary">
+                                <td><strong>Total:</strong></td>
+                                <td id="total"><strong></strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/calculator.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+name = "quoting-calculator"
+type = "webpack"
+account_id = "" # Your Cloudflare account ID goes here
+workers_dev = true
+route = ""
+zone_id = "" # Your zone ID goes here if you're using a custom domain
+
+[site]
+bucket = "./public"
+entry-point = "workers-site"
