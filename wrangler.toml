@@ -1,10 +1,6 @@
-name = "quoting-calculator"
-type = "webpack"
-account_id = "" # Your Cloudflare account ID goes here
-workers_dev = true
-route = ""
-zone_id = "" # Your zone ID goes here if you're using a custom domain
+name = "quoting-calculator-internal"
+compatibility_date = "2024-01-09"
+account_id = "33821fec34987529b072c373ab04d818"
 
-[site]
-bucket = "./public"
-entry-point = "workers-site"
+[pages]
+pages_build_output_dir = "public"
