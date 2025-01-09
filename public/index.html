@@ -56,17 +56,6 @@
                                     <label for="taxRate" class="form-label">Tax Rate (%)</label>
                                     <input type="number" class="form-control" id="taxRate" value="0" min="0" max="100" step="0.01">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="discountType" class="form-label">Discount Type</label>
-                                    <select class="form-control" id="discountType">
-                                        <option value="percentage">Percentage (%)</option>
-                                        <option value="fixed">Fixed Amount ($)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="discountValue" class="form-label">Discount Value</label>
-                                    <input type="number" class="form-control" id="discountValue" value="0" min="0" step="0.01">
-                                </div>
                             </div>
                         </form>
                     </div>
@@ -89,10 +78,6 @@
                                 <tr>
                                     <td>Subtotal:</td>
                                     <td class="text-end" id="subtotal">$0.00</td>
-                                </tr>
-                                <tr>
-                                    <td>Discount:</td>
-                                    <td class="text-end" id="discountAmount">$0.00</td>
                                 </tr>
                                 <tr>
                                     <td>Tax:</td>
@@ -125,7 +110,7 @@
     <template id="quoteItemTemplate">
         <div class="quote-item border rounded p-3 mb-3">
             <div class="row">
-                <div class="col-md-6 mb-2">
+                <div class="col-md-4 mb-2">
                     <label class="form-label">Item Description</label>
                     <input type="text" class="form-control item-description" required>
                 </div>
@@ -136,6 +121,17 @@
                 <div class="col-md-2 mb-2">
                     <label class="form-label">Unit Price ($)</label>
                     <input type="number" class="form-control item-price" step="0.01" min="0" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label class="form-label">Discount Type</label>
+                    <select class="form-control item-discount-type">
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="fixed">Fixed ($)</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label class="form-label">Discount</label>
+                    <input type="number" class="form-control item-discount-value" value="0" min="0" step="0.01">
                 </div>
                 <div class="col-md-2 mb-2 d-flex align-items-end">
                     <button type="button" class="btn btn-outline-danger btn-sm delete-item w-100">

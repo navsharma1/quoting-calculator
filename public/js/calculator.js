@@ -24,12 +24,9 @@ class QuoteCalculator {
         this.clientNameInput = document.getElementById('clientName');
         this.quoteDateInput = document.getElementById('quoteDate');
         this.taxRateInput = document.getElementById('taxRate');
-        this.discountTypeSelect = document.getElementById('discountType');
-        this.discountValueInput = document.getElementById('discountValue');
 
         // Result elements
         this.subtotalElement = document.getElementById('subtotal');
-        this.discountElement = document.getElementById('discountAmount');
         this.taxElement = document.getElementById('taxAmount');
         this.totalElement = document.getElementById('total');
     }
@@ -66,48 +63,56 @@ class QuoteCalculator {
         this.calculateTotal();
     }
 
-    calculateTotal() {
-        let subtotal = 0;
-        const items = this.itemsContainer.getElementsByClassName('quote-item');
+    calculateItemTotal(item) {
+        const quantity = parseFloat(item.querySelector('.item-quantity').value) || 0;
+        const price = parseFloat(item.querySelector('.item-price').value) || 0;
+        const discountType = item.querySelector('.item-discount-type').value;
+        const discountValue = parseFloat(item.querySelector('.item-discount-value').value) || 0;
         
-        // Calculate subtotal
-        Array.from(items).forEach(item => {
-            const quantity = parseFloat(item.querySelector('.item-quantity').value) || 0;
-            const price = parseFloat(item.querySelector('.item-price').value) || 0;
-            subtotal += quantity * price;
-        });
-
-        // Calculate discount
-        const discountType = this.discountTypeSelect.value;
-        const discountValue = parseFloat(this.discountValueInput.value) || 0;
+        const lineTotal = quantity * price;
         let discountAmount = 0;
 
         if (discountType === 'percentage') {
-            discountAmount = (subtotal * discountValue) / 100;
+            discountAmount = (lineTotal * discountValue) / 100;
         } else {
             discountAmount = discountValue;
         }
 
-        // Calculate tax
-        const taxRate = parseFloat(this.taxRateInput.value) || 0;
-        const taxableAmount = subtotal - discountAmount;
-        const taxAmount = (taxableAmount * taxRate) / 100;
-
-        // Calculate total
-        const total = taxableAmount + taxAmount;
-
-        // Update display
-        this.updateDisplay(subtotal, discountAmount, taxAmount, total);
+        return {
+            lineTotal,
+            discountAmount,
+            finalTotal: lineTotal - discountAmount
+        };
     }
 
-    updateDisplay(subtotal, discount, tax, total) {
+    calculateTotal() {
+        let subtotal = 0;
+        const items = this.itemsContainer.getElementsByClassName('quote-item');
+        
+        // Calculate subtotal with individual item discounts
+        Array.from(items).forEach(item => {
+            const { finalTotal } = this.calculateItemTotal(item);
+            subtotal += finalTotal;
+        });
+
+        // Calculate tax
+        const taxRate = parseFloat(this.taxRateInput.value) || 0;
+        const taxAmount = (subtotal * taxRate) / 100;
+
+        // Calculate total
+        const total = subtotal + taxAmount;
+
+        // Update display
+        this.updateDisplay(subtotal, taxAmount, total);
+    }
+
+    updateDisplay(subtotal, tax, total) {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD'
         });
 
         this.subtotalElement.textContent = formatter.format(subtotal);
-        this.discountElement.textContent = formatter.format(discount);
         this.taxElement.textContent = formatter.format(tax);
         this.totalElement.textContent = formatter.format(total);
     }
@@ -120,11 +125,11 @@ class QuoteCalculator {
             items: Array.from(this.itemsContainer.getElementsByClassName('quote-item')).map(item => ({
                 description: item.querySelector('.item-description').value,
                 quantity: item.querySelector('.item-quantity').value,
-                price: item.querySelector('.item-price').value
+                price: item.querySelector('.item-price').value,
+                discountType: item.querySelector('.item-discount-type').value,
+                discountValue: item.querySelector('.item-discount-value').value
             })),
-            taxRate: this.taxRateInput.value,
-            discountType: this.discountTypeSelect.value,
-            discountValue: this.discountValueInput.value
+            taxRate: this.taxRateInput.value
         };
 
         // Save to localStorage
@@ -166,8 +171,6 @@ class QuoteCalculator {
         this.clientNameInput.value = quote.clientName;
         this.quoteDateInput.value = quote.date;
         this.taxRateInput.value = quote.taxRate;
-        this.discountTypeSelect.value = quote.discountType;
-        this.discountValueInput.value = quote.discountValue;
 
         // Remove default item
         this.itemsContainer.innerHTML = '';
@@ -178,6 +181,8 @@ class QuoteCalculator {
             itemElement.querySelector('.item-description').value = item.description;
             itemElement.querySelector('.item-quantity').value = item.quantity;
             itemElement.querySelector('.item-price').value = item.price;
+            itemElement.querySelector('.item-discount-type').value = item.discountType;
+            itemElement.querySelector('.item-discount-value').value = item.discountValue;
             this.itemsContainer.appendChild(itemElement);
         });
 
