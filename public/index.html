@@ -3,62 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quoting Calculator</title>
+    <title>Professional Quoting Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Quoting Calculator</h1>
-        
-        <div class="card shadow">
-            <div class="card-body">
-                <form id="quoteForm">
-                    <div class="mb-3">
-                        <label for="productName" class="form-label">Product Name</label>
-                        <input type="text" class="form-control" id="productName" required>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Quoting Calculator</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Quote Details</h5>
+                        <div>
+                            <button class="btn btn-light btn-sm me-2" id="newQuote">
+                                <i class="bi bi-plus-circle"></i> New Quote
+                            </button>
+                            <button class="btn btn-light btn-sm" id="saveQuote">
+                                <i class="bi bi-save"></i> Save
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="quantity" min="1" required>
+                    <div class="card-body">
+                        <form id="quoteForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="clientName" class="form-label">Client Name</label>
+                                    <input type="text" class="form-control" id="clientName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="quoteDate" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="quoteDate" required>
+                                </div>
+                            </div>
+
+                            <div id="itemsContainer">
+                                <!-- Items will be added here dynamically -->
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary mb-3" id="addItem">
+                                <i class="bi bi-plus"></i> Add Item
+                            </button>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                    <input type="number" class="form-control" id="taxRate" value="0" min="0" max="100" step="0.01">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="discountType" class="form-label">Discount Type</label>
+                                    <select class="form-control" id="discountType">
+                                        <option value="percentage">Percentage (%)</option>
+                                        <option value="fixed">Fixed Amount ($)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="discountValue" class="form-label">Discount Value</label>
+                                    <input type="number" class="form-control" id="discountValue" value="0" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="unitPrice" class="form-label">Unit Price ($)</label>
-                        <input type="number" class="form-control" id="unitPrice" step="0.01" min="0" required>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Summary</h5>
+                        <div>
+                            <button class="btn btn-light btn-sm" id="printQuote">
+                                <i class="bi bi-printer"></i> Print
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="discount" class="form-label">Discount (%)</label>
-                        <input type="number" class="form-control" id="discount" min="0" max="100" value="0">
+                    <div class="card-body">
+                        <div id="quoteResult">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Subtotal:</td>
+                                    <td class="text-end" id="subtotal">$0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Discount:</td>
+                                    <td class="text-end" id="discountAmount">$0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Tax:</td>
+                                    <td class="text-end" id="taxAmount">$0.00</td>
+                                </tr>
+                                <tr class="table-primary fw-bold">
+                                    <td>Total:</td>
+                                    <td class="text-end" id="total">$0.00</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">Calculate Quote</button>
-                </form>
-                
-                <div id="quoteResult" class="mt-4 d-none">
-                    <h3>Quote Summary</h3>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tr>
-                                <td>Subtotal:</td>
-                                <td id="subtotal"></td>
-                            </tr>
-                            <tr>
-                                <td>Discount:</td>
-                                <td id="discountAmount"></td>
-                            </tr>
-                            <tr class="table-primary">
-                                <td><strong>Total:</strong></td>
-                                <td id="total"><strong></strong></td>
-                            </tr>
-                        </table>
+                </div>
+
+                <div class="card mt-3 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Saved Quotes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="savedQuotesList" class="list-group">
+                            <!-- Saved quotes will appear here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Quote Item Template -->
+    <template id="quoteItemTemplate">
+        <div class="quote-item border rounded p-3 mb-3">
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Item Description</label>
+                    <input type="text" class="form-control item-description" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" class="form-control item-quantity" value="1" min="1" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label class="form-label">Unit Price ($)</label>
+                    <input type="number" class="form-control item-price" step="0.01" min="0" required>
+                </div>
+                <div class="col-md-2 mb-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-outline-danger btn-sm delete-item w-100">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/calculator.js"></script>
