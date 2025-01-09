@@ -3,14 +3,18 @@
 A web-based calculator tool for generating and managing quotes, optimized for Cloudflare Pages deployment.
 
 ## Live Demo
-Visit the live application: [Quoting Calculator](https://quoting-calculator.pages.dev/)
+Production URL: [Quoting Calculator](https://quoting-calculator.pages.dev/)
 
 ## Features
-- Quote calculation
+- Quote calculation with multiple items
 - Interactive web interface
 - Easy-to-use form inputs
 - Cloudflare Pages compatible
 - Fast global CDN delivery
+- Tax calculation support
+- Save/Load quotes functionality
+- Print quotes
+- Flexible discount options (percentage or fixed amount)
 
 ## Project Structure
 ```
@@ -28,15 +32,15 @@ quoting-calculator/
 3. Serve the `public` directory using a local server
 4. Open your browser and visit the local server URL
 
-## Deployment to Cloudflare Pages
-1. Fork this repository to your GitHub account
-2. Log in to Cloudflare Dashboard
-3. Go to Pages > Create a project
-4. Connect your GitHub repository
-5. Configure your build settings:
-   - Build command: (leave empty)
-   - Build output directory: `public`
-6. Deploy!
+## Deployment
+The application is automatically deployed to Cloudflare Pages at [https://quoting-calculator.pages.dev/](https://quoting-calculator.pages.dev/)
+
+### Custom Domain Setup (Future)
+To set up a custom domain:
+1. Purchase your desired domain
+2. Add it to Cloudflare
+3. Configure DNS settings with a CNAME record pointing to quoting-calculator.pages.dev
+4. Add the custom domain in Cloudflare Pages settings
 
 ## Development
 - All static assets are in the `public` directory
