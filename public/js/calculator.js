@@ -108,22 +108,44 @@ class QuoteCalculator {
         let totalDisplay = item.querySelector('.item-total');
         if (!totalDisplay) {
             totalDisplay = document.createElement('div');
-            totalDisplay.className = 'item-total mt-2 text-end';
+            totalDisplay.className = 'item-total';
             item.querySelector('.row').appendChild(totalDisplay);
         }
 
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
 
+        const discountType = item.querySelector('.item-discount-type').value;
+        const discountValue = parseFloat(item.querySelector('.item-discount-value').value) || 0;
+        const discountText = discountType === 'percentage' ? `${discountValue}%` : formatter.format(discountValue);
+
         totalDisplay.innerHTML = `
-            <small class="text-muted">
-                Subtotal: ${formatter.format(lineTotal)}<br>
-                Discount: ${formatter.format(discountAmount)}<br>
-                <strong>Total: ${formatter.format(finalTotal)}</strong>
-            </small>
+            <div class="total-grid">
+                <div>
+                    <div class="total-value">${formatter.format(lineTotal)}</div>
+                    <small class="text-muted">Subtotal</small>
+                </div>
+                <div>
+                    <div class="discount-value">-${formatter.format(discountAmount)}</div>
+                    <small class="text-muted">Discount (${discountText})</small>
+                </div>
+                <div>
+                    <div class="final-total">${formatter.format(finalTotal)}</div>
+                    <small class="text-muted">Total</small>
+                </div>
+            </div>
         `;
+
+        // Add a fade-in effect to the total display
+        totalDisplay.style.opacity = '0';
+        setTimeout(() => {
+            totalDisplay.style.transition = 'opacity 0.3s ease-in-out';
+            totalDisplay.style.opacity = '1';
+        }, 50);
     }
 
     calculateTotal() {
@@ -131,15 +153,16 @@ class QuoteCalculator {
         let totalDiscount = 0;
         const items = this.itemsContainer.getElementsByClassName('quote-item');
         
-        // Calculate totals
+        // Calculate totals with precision handling
         Array.from(items).forEach(item => {
             const { lineTotal, discountAmount, finalTotal } = this.calculateItemTotal(item);
-            subtotal += lineTotal;
-            totalDiscount += discountAmount;
+            // Round to 2 decimal places to avoid floating-point errors
+            subtotal = parseFloat((subtotal + lineTotal).toFixed(2));
+            totalDiscount = parseFloat((totalDiscount + discountAmount).toFixed(2));
         });
 
         // Calculate final total
-        const total = subtotal - totalDiscount;
+        const total = parseFloat((subtotal - totalDiscount).toFixed(2));
 
         // Update display
         this.updateDisplay(subtotal, totalDiscount, total);
@@ -148,12 +171,28 @@ class QuoteCalculator {
     updateDisplay(subtotal, totalDiscount, total) {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
 
-        this.subtotalElement.textContent = formatter.format(subtotal);
-        this.totalDiscountElement.textContent = formatter.format(totalDiscount);
-        this.totalElement.textContent = formatter.format(total);
+        // Update the summary table with animations
+        const elements = [
+            { element: this.subtotalElement, value: subtotal },
+            { element: this.totalDiscountElement, value: totalDiscount },
+            { element: this.totalElement, value: total }
+        ];
+
+        elements.forEach(({ element, value }) => {
+            const currentValue = element.textContent;
+            const newValue = formatter.format(value);
+            
+            if (currentValue !== newValue) {
+                element.style.transition = 'color 0.3s ease-in-out';
+                element.style.color = value < 0 ? 'var(--danger-color)' : 'inherit';
+                element.textContent = newValue;
+            }
+        });
     }
 
     saveQuote() {
