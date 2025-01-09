@@ -23,11 +23,10 @@ class QuoteCalculator {
         // Input fields
         this.clientNameInput = document.getElementById('clientName');
         this.quoteDateInput = document.getElementById('quoteDate');
-        this.taxRateInput = document.getElementById('taxRate');
 
         // Result elements
         this.subtotalElement = document.getElementById('subtotal');
-        this.taxElement = document.getElementById('taxAmount');
+        this.totalDiscountElement = document.getElementById('totalDiscount');
         this.totalElement = document.getElementById('total');
     }
 
@@ -38,7 +37,24 @@ class QuoteCalculator {
         this.printQuoteBtn.addEventListener('click', () => this.printQuote());
         
         // Live calculation on any input change
-        this.quoteForm.addEventListener('input', () => this.calculateTotal());
+        this.itemsContainer.addEventListener('input', (e) => {
+            const item = e.target.closest('.quote-item');
+            if (item) {
+                this.updateItemDisplay(item);
+                this.calculateTotal();
+            }
+        });
+
+        // Live calculation on discount type change
+        this.itemsContainer.addEventListener('change', (e) => {
+            if (e.target.classList.contains('item-discount-type')) {
+                const item = e.target.closest('.quote-item');
+                if (item) {
+                    this.updateItemDisplay(item);
+                    this.calculateTotal();
+                }
+            }
+        });
         
         // Delete item event delegation
         this.itemsContainer.addEventListener('click', (e) => {
@@ -75,7 +91,7 @@ class QuoteCalculator {
         if (discountType === 'percentage') {
             discountAmount = (lineTotal * discountValue) / 100;
         } else {
-            discountAmount = discountValue;
+            discountAmount = Math.min(discountValue, lineTotal); // Prevent negative totals
         }
 
         return {
@@ -85,35 +101,58 @@ class QuoteCalculator {
         };
     }
 
-    calculateTotal() {
-        let subtotal = 0;
-        const items = this.itemsContainer.getElementsByClassName('quote-item');
+    updateItemDisplay(item) {
+        const { lineTotal, discountAmount, finalTotal } = this.calculateItemTotal(item);
         
-        // Calculate subtotal with individual item discounts
-        Array.from(items).forEach(item => {
-            const { finalTotal } = this.calculateItemTotal(item);
-            subtotal += finalTotal;
+        // Update or create the total display for this item
+        let totalDisplay = item.querySelector('.item-total');
+        if (!totalDisplay) {
+            totalDisplay = document.createElement('div');
+            totalDisplay.className = 'item-total mt-2 text-end';
+            item.querySelector('.row').appendChild(totalDisplay);
+        }
+
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
         });
 
-        // Calculate tax
-        const taxRate = parseFloat(this.taxRateInput.value) || 0;
-        const taxAmount = (subtotal * taxRate) / 100;
-
-        // Calculate total
-        const total = subtotal + taxAmount;
-
-        // Update display
-        this.updateDisplay(subtotal, taxAmount, total);
+        totalDisplay.innerHTML = `
+            <small class="text-muted">
+                Subtotal: ${formatter.format(lineTotal)}<br>
+                Discount: ${formatter.format(discountAmount)}<br>
+                <strong>Total: ${formatter.format(finalTotal)}</strong>
+            </small>
+        `;
     }
 
-    updateDisplay(subtotal, tax, total) {
+    calculateTotal() {
+        let subtotal = 0;
+        let totalDiscount = 0;
+        const items = this.itemsContainer.getElementsByClassName('quote-item');
+        
+        // Calculate totals
+        Array.from(items).forEach(item => {
+            const { lineTotal, discountAmount, finalTotal } = this.calculateItemTotal(item);
+            subtotal += lineTotal;
+            totalDiscount += discountAmount;
+        });
+
+        // Calculate final total
+        const total = subtotal - totalDiscount;
+
+        // Update display
+        this.updateDisplay(subtotal, totalDiscount, total);
+    }
+
+    updateDisplay(subtotal, totalDiscount, total) {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD'
         });
 
         this.subtotalElement.textContent = formatter.format(subtotal);
-        this.taxElement.textContent = formatter.format(tax);
+        this.totalDiscountElement.textContent = formatter.format(totalDiscount);
         this.totalElement.textContent = formatter.format(total);
     }
 
@@ -128,8 +167,7 @@ class QuoteCalculator {
                 price: item.querySelector('.item-price').value,
                 discountType: item.querySelector('.item-discount-type').value,
                 discountValue: item.querySelector('.item-discount-value').value
-            })),
-            taxRate: this.taxRateInput.value
+            }))
         };
 
         // Save to localStorage
@@ -170,7 +208,6 @@ class QuoteCalculator {
         
         this.clientNameInput.value = quote.clientName;
         this.quoteDateInput.value = quote.date;
-        this.taxRateInput.value = quote.taxRate;
 
         // Remove default item
         this.itemsContainer.innerHTML = '';
@@ -184,6 +221,9 @@ class QuoteCalculator {
             itemElement.querySelector('.item-discount-type').value = item.discountType;
             itemElement.querySelector('.item-discount-value').value = item.discountValue;
             this.itemsContainer.appendChild(itemElement);
+            
+            // Update the display for this item
+            this.updateItemDisplay(this.itemsContainer.lastElementChild);
         });
 
         this.calculateTotal();
