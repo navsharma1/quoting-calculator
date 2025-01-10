@@ -3,95 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Quoting Calculator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Salesforce Quoting Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Quoting Calculator</a>
+            <a class="navbar-brand" href="#">
+                <img src="https://codeium.com/images/codeium-logo-light.png" alt="Codeium" height="40">
+            </a>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Quote Details</h5>
-                        <div>
-                            <button class="btn btn-light btn-sm me-2" id="newQuote">
-                                <i class="bi bi-plus-circle"></i> New Quote
-                            </button>
-                            <button class="btn btn-light btn-sm" id="saveQuote">
-                                <i class="bi bi-save"></i> Save
-                            </button>
+        <!-- Auth Status -->
+        <div id="auth-status" class="alert alert-info d-none">
+            Connecting to Salesforce...
+        </div>
+
+        <!-- Main Content (hidden until authenticated) -->
+        <div id="main-content" class="d-none">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h2 class="mb-0">ORDER FORM</h2>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <form id="quoteForm">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="clientName" class="form-label">Client Name</label>
-                                    <input type="text" class="form-control" id="clientName" required>
+                        <div class="card-body">
+                            <form id="quoteForm">
+                                <!-- Company Information -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <p class="mb-0"><strong>Exafunction, Inc.</strong></p>
+                                        <p class="mb-0">900 Villa Street</p>
+                                        <p class="mb-0">Mountain View, CA 94041</p>
+                                    </div>
+                                    <div class="col-md-6 text-md-end">
+                                        <div class="mb-3">
+                                            <label class="form-label">Date prepared:</label>
+                                            <input type="date" class="form-control" id="quoteDate">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Valid through:</label>
+                                            <input type="date" class="form-control" id="validThrough">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="quoteDate" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="quoteDate" required>
+
+                                <!-- Customer Information -->
+                                <div class="border-top pt-4 mb-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Customer Name:</label>
+                                                <div class="position-relative">
+                                                    <input type="text" class="form-control" id="customerName" autocomplete="off" required>
+                                                    <div id="customerSearchResults" class="position-absolute w-100 mt-1 bg-white border rounded shadow-sm" style="display: none; z-index: 1000; max-height: 200px; overflow-y: auto;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Partner Name:</label>
+                                                <input type="text" class="form-control" id="partnerName">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Billing Address:</label>
+                                                <input type="text" class="form-control" id="billingAddress">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Billing City/State/Zip:</label>
+                                                <input type="text" class="form-control" id="billingCityStateZip">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Billing Contact:</label>
+                                                <input type="text" class="form-control" id="billingContact">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Payment Terms:</label>
+                                                <select class="form-select" id="paymentTerms">
+                                                    <option value="Net 30">Net 30</option>
+                                                    <option value="Net 60">Net 60</option>
+                                                    <option value="Net 90">Net 90</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Billing Frequency:</label>
+                                                <select class="form-select" id="billingFrequency">
+                                                    <option value="Annual">Annual</option>
+                                                    <option value="Monthly">Monthly</option>
+                                                    <option value="Quarterly">Quarterly</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div id="itemsContainer">
-                                <!-- Items will be added here dynamically -->
-                            </div>
-
-                            <button type="button" class="btn btn-outline-primary mb-3" id="addItem">
-                                <i class="bi bi-plus"></i> Add Item
-                            </button>
-                        </form>
+                                <!-- Offering & Fees -->
+                                <div class="border-top pt-4">
+                                    <h4 class="mb-4">OFFERING & FEES</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="product-col">Product</th>
+                                                    <th class="billing-col">Billing</th>
+                                                    <th class="quantity-col">Quantity</th>
+                                                    <th class="price-col">Price</th>
+                                                    <th class="total-col">Total</th>
+                                                    <th class="actions-col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="itemsContainer">
+                                                <!-- Items will be added here dynamically -->
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="4" class="text-end">
+                                                        <span class="text-muted me-3">Subtotal:</span>
+                                                        <span id="subtotal" class="subtotal-amount">$0.00</span>
+                                                    </td>
+                                                    <td class="text-end" id="total">$0.00</td>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary" id="addItem">
+                                        <i class="bi bi-plus"></i> Add Product
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Summary</h5>
-                        <div>
-                            <button class="btn btn-light btn-sm" id="printQuote">
-                                <i class="bi bi-printer"></i> Print
-                            </button>
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Actions</h5>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="quoteResult">
-                            <table class="table table-sm">
-                                <tr>
-                                    <td>Subtotal:</td>
-                                    <td class="text-end" id="subtotal">$0.00</td>
-                                </tr>
-                                <tr>
-                                    <td>Total Discount:</td>
-                                    <td class="text-end" id="totalDiscount">$0.00</td>
-                                </tr>
-                                <tr class="table-primary fw-bold">
-                                    <td>Total:</td>
-                                    <td class="text-end" id="total">$0.00</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-3 shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Saved Quotes</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="savedQuotesList" class="list-group">
-                            <!-- Saved quotes will appear here -->
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" id="saveQuote">
+                                    <i class="bi bi-save"></i> Save Quote
+                                </button>
+                                <button class="btn btn-outline-primary" id="printQuote">
+                                    <i class="bi bi-printer"></i> Print Quote
+                                </button>
+                                <button class="btn btn-outline-secondary" id="newQuote">
+                                    <i class="bi bi-plus-circle"></i> New Quote
+                                </button>
+                            </div>
+                            <hr>
+                            <h6>Saved Quotes</h6>
+                            <div class="list-group" id="savedQuotesList">
+                                <!-- Saved quotes will be listed here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -99,43 +170,60 @@
         </div>
     </div>
 
-    <!-- Quote Item Template -->
     <template id="quoteItemTemplate">
-        <div class="quote-item border rounded p-3 mb-3">
-            <div class="row">
-                <div class="col-md-4 mb-2">
-                    <label class="form-label">Item Description</label>
-                    <input type="text" class="form-control item-description" required>
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Quantity</label>
-                    <input type="number" class="form-control item-quantity" value="1" min="1" required>
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Unit Price ($)</label>
-                    <input type="number" class="form-control item-price" step="0.01" min="0" required>
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Discount Type</label>
-                    <select class="form-control item-discount-type">
-                        <option value="percentage">Percentage (%)</option>
-                        <option value="fixed">Fixed ($)</option>
+        <tr class="quote-item">
+            <td class="product-col">
+                <select class="form-select item-description" required>
+                    <option value="">Select a product...</option>
+                </select>
+            </td>
+            <td class="billing-col">
+                <div class="d-flex align-items-center gap-2">
+                    <select class="form-select item-term">
+                        <option value="monthly">Monthly</option>
+                        <option value="annual">Annual</option>
                     </select>
                 </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Discount</label>
-                    <input type="number" class="form-control item-discount-value" value="0" min="0" step="0.01">
+            </td>
+            <td class="quantity-col">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-group input-group-sm">
+                        <button type="button" class="btn btn-outline-secondary decrease-users">-</button>
+                        <input type="number" class="form-control item-users text-center" value="1" min="1" required>
+                        <button type="button" class="btn btn-outline-secondary increase-users">+</button>
+                    </div>
+                    <span class="text-muted">users</span>
                 </div>
-                <div class="col-md-2 mb-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-outline-danger btn-sm delete-item w-100">
-                        <i class="bi bi-trash"></i> Remove
-                    </button>
+            </td>
+            <td class="price-col">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control item-price text-end" value="0" min="0" step="0.01" required>
+                        <span class="input-group-text">/user/mo</span>
+                    </div>
+                    <div class="input-group input-group-sm" style="width: 100px;">
+                        <input type="number" class="form-control item-discount text-center" value="0" min="0" max="100" step="1" required>
+                        <span class="input-group-text">% off</span>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </td>
+            <td class="total-col text-end">
+                <div class="d-flex flex-column align-items-end">
+                    <span class="item-total fw-bold">$0.00</span>
+                    <small class="text-muted item-period"></small>
+                </div>
+            </td>
+            <td class="actions-col text-center">
+                <button type="button" class="btn btn-outline-danger btn-sm delete-item">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
     </template>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/calculator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="../js/calculator.js"></script>
 </body>
 </html>

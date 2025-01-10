@@ -1,0 +1,416 @@
+:root {
+    --primary-color: #00A67E;
+    --primary-hover: #00D1A0;
+    --secondary-color: #333333;
+    --background-color: #f8f9fa;
+    --text-color: #212529;
+    --border-color: #dee2e6;
+    --success-color: #00A67E;
+    --danger-color: #dc3545;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.navbar {
+    background-color: var(--secondary-color);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+    background-color: white;
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem;
+}
+
+.card-header h2 {
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    border-color: var(--border-color);
+    padding: 0.625rem 0.75rem;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 166, 126, 0.25);
+}
+
+.btn {
+    font-weight: 500;
+    padding: 0.625rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}
+
+/* Table Styles */
+.table {
+    margin-bottom: 1.5rem;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: var(--secondary-color);
+    padding: 1rem;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-top: none;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Column widths */
+.product-col { width: 25%; }
+.billing-col { width: 15%; }
+.quantity-col { width: 20%; }
+.price-col { width: 25%; }
+.total-col { width: 12%; }
+.actions-col { width: 3%; }
+
+/* Price and total columns */
+.item-price,
+.item-total,
+#total,
+#subtotal {
+    font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+    font-weight: 500;
+}
+
+.subtotal-amount {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+/* Input fields in table */
+.table .form-control,
+.table .form-select {
+    padding: 0.5rem;
+    height: auto;
+    font-size: 0.9rem;
+}
+
+.table .input-group-text {
+    background-color: #f8f9fa;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+/* Quantity controls */
+.decrease-users,
+.increase-users {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Delete button */
+.delete-item {
+    padding: 0.25rem 0.5rem;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table tfoot {
+    border-top: 2px solid var(--border-color);
+}
+
+.table tfoot td {
+    padding: 1rem;
+    font-weight: 600;
+}
+
+/* Period label */
+.item-period {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 1rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+    background-color: rgba(0, 166, 126, 0.05);
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.bg-success {
+    background-color: var(--primary-color) !important;
+}
+
+.signature-line {
+    border-bottom: 1px solid var(--text-color);
+    margin-top: 0.5rem;
+    height: 1.5rem;
+}
+
+.print-name, .title {
+    margin-top: 0.5rem;
+    height: 1.5rem;
+}
+
+/* Animations */
+.form-control, .form-select, .btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:hover, .form-select:hover {
+    border-color: var(--primary-color);
+}
+
+/* Print Styles */
+@media print {
+    @page {
+        size: letter;
+        margin: 0.75in;
+    }
+
+    body {
+        background: white !important;
+        font-size: 12pt !important;
+        line-height: 1.3 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    }
+
+    /* Hide UI elements */
+    .navbar,
+    .col-lg-4,
+    .btn,
+    .card-header,
+    .border-top {
+        display: none !important;
+    }
+
+    /* Reset container */
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .col-lg-8 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        padding: 0 !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+
+    .card-body {
+        padding: 0 !important;
+    }
+
+    /* Logo */
+    .navbar-brand img {
+        filter: brightness(0) !important;
+        height: 30px !important;
+    }
+
+    /* Headers and text */
+    h2 {
+        font-size: 18pt !important;
+        margin: 0 0 1rem 0 !important;
+    }
+
+    p {
+        margin: 0 0 0.5rem 0 !important;
+    }
+
+    /* Form fields */
+    .form-control,
+    .form-select {
+        border: none !important;
+        padding: 0 !important;
+        height: auto !important;
+        background: none !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        color: black !important;
+    }
+
+    /* Table styles */
+    .table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 1rem 0 !important;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid black !important;
+        padding: 8px !important;
+        text-align: left !important;
+        color: black !important;
+        background: none !important;
+    }
+
+    .table th {
+        font-weight: bold !important;
+    }
+
+    /* Additional content */
+    #quoteForm::after {
+        content: "Additional Users @ _ per User per month in increments of _" !important;
+        display: block !important;
+        margin: 1rem 0 !important;
+        font-size: 10pt !important;
+    }
+
+    #quoteForm::after {
+        content: "This Order Form is governed by the terms Master Subscription Agreement posted at codeium.com/msa, unless (i) Customer has an agreement executed with Exafunction, in which case such written agreement will govern or (ii) as otherwise set forth herein." !important;
+        display: block !important;
+        margin: 1rem 0 2rem 0 !important;
+        font-size: 10pt !important;
+    }
+
+    /* Signatures */
+    .signature-section {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 2rem !important;
+        margin-top: 2rem !important;
+    }
+
+    .signature-line {
+        border-bottom: 1px solid black !important;
+        margin-top: 1.5rem !important;
+        height: 0 !important;
+    }
+
+    /* Force black text */
+    * {
+        color: black !important;
+        text-shadow: none !important;
+        filter: none !important;
+        -ms-filter: none !important;
+    }
+
+    /* Contract terms */
+    .contract-terms {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1rem !important;
+        margin: 1rem 0 !important;
+    }
+
+    .contract-terms p {
+        margin: 0 0 0.5rem 0 !important;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+/* Customer Search Styles */
+#customerSearchResults {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#customerSearchResults div {
+    transition: background-color 0.2s;
+}
+
+#customerSearchResults div:hover {
+    background-color: #f8f9fa;
+}
