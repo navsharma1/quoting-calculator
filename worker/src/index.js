@@ -5,17 +5,30 @@ const SF_API_URL = 'https://login.salesforce.com/services/data/' + SF_API_VERSIO
 const SF_AUTH_URL = `${SF_LOGIN_URL}/services/oauth2/authorize`;
 const SF_TOKEN_URL = `${SF_LOGIN_URL}/services/oauth2/token`;
 
-// CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+// CORS headers - Allow Cloudflare Pages domains
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin') || '';
+  // Allow if it's a Cloudflare Pages domain or localhost
+  if (origin.endsWith('.pages.dev') || origin.startsWith('http://localhost')) {
+    return {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    };
+  }
+  // Default CORS headers for other domains
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
 
 // Handle CORS preflight requests
 async function handleOptions(request) {
   return new Response(null, {
-    headers: corsHeaders,
+    headers: getCorsHeaders(request),
   });
 }
 
@@ -94,14 +107,13 @@ async function handleRequest(request, env) {
 
       const tokenResponse = await getAccessToken(code, env);
       
-      // Return the tokens to the frontend
       return new Response(JSON.stringify({
         access_token: tokenResponse.access_token,
         instance_url: tokenResponse.instance_url,
       }), {
         headers: {
           'Content-Type': 'application/json',
-          ...corsHeaders,
+          ...getCorsHeaders(request),
         },
       });
     }
@@ -113,7 +125,7 @@ async function handleRequest(request, env) {
       }), {
         headers: {
           'Content-Type': 'application/json',
-          ...corsHeaders,
+          ...getCorsHeaders(request),
         },
       });
     }
@@ -121,7 +133,10 @@ async function handleRequest(request, env) {
     // All other endpoints require an access token
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return new Response('Unauthorized', { status: 401, headers: corsHeaders });
+      return new Response('Unauthorized', { 
+        status: 401, 
+        headers: getCorsHeaders(request) 
+      });
     }
     const accessToken = authHeader.split(' ')[1];
 
@@ -134,7 +149,7 @@ async function handleRequest(request, env) {
       return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
-          ...corsHeaders,
+          ...getCorsHeaders(request),
         },
       });
     }
@@ -146,7 +161,7 @@ async function handleRequest(request, env) {
       return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
-          ...corsHeaders,
+          ...getCorsHeaders(request),
         },
       });
     }
@@ -164,7 +179,7 @@ async function handleRequest(request, env) {
       return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
-          ...corsHeaders,
+          ...getCorsHeaders(request),
         },
       });
     }
@@ -172,7 +187,7 @@ async function handleRequest(request, env) {
     // Handle 404 for unknown endpoints
     return new Response('Not Found', {
       status: 404,
-      headers: corsHeaders,
+      headers: getCorsHeaders(request),
     });
   } catch (error) {
     // Handle errors
@@ -180,7 +195,7 @@ async function handleRequest(request, env) {
       status: 500,
       headers: {
         'Content-Type': 'application/json',
-        ...corsHeaders,
+        ...getCorsHeaders(request),
       },
     });
   }
